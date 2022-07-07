@@ -11,7 +11,7 @@ resource "oci_identity_policy" "OpenSearchNetworkPolicy" {
   statements = ["Allow service opensearch to manage vnics in compartment id ${var.policy_compartment_ocid}",
     "Allow service opensearch to manage vcns in compartment  id ${var.policy_compartment_ocid}",
     "Allow service opensearch to use subnets in compartment id ${var.policy_compartment_ocid}",
-  "Allow service opensearch to use network-security-groups in compartment id'${var.policy_compartment_ocid}'}"]
+  "Allow service opensearch to use network-security-groups in compartment id ${var.policy_compartment_ocid}"]
   defined_tags = var.defined_tags
 }
 
@@ -24,17 +24,17 @@ resource "oci_identity_policy" "OpenSearchClustersPolicy" {
   description    = "OpenSearchClustersPolicy-${var.random_id}"
   compartment_id = var.policy_compartment_ocid
   statements = ["Allow group ${var.policy_for_group} to manage opensearch-clusters in compartment id ${var.policy_compartment_ocid}",
-  "Allow group ${var.policy_for_group} to manage opensearch-family in compartment id'${var.policy_compartment_ocid}'}"]
+  "Allow group ${var.policy_for_group} to manage opensearch-family in compartment id ${var.policy_compartment_ocid}"]
   defined_tags = var.defined_tags
 }
 
 resource "oci_identity_policy" "OpenSearchClustersUserPolicy" {
   count = contains(var.activate_policies_for_service, "OpenSearchUser") ? 1 : 0
 
-  name           = "OpenSearchClustersPolicy-${var.random_id}"
-  description    = "OpenSearchClustersPolicy-${var.random_id}"
+  name           = "OpenSearchClustersUserPolicy-${var.random_id}"
+  description    = "OpenSearchClustersUserPolicy-${var.random_id}"
   compartment_id = var.policy_compartment_ocid
   statements = ["Allow any-user to manage opensearch-clusters in compartment id ${var.policy_compartment_ocid}",
-  "Allow any-user to manage opensearch-family in compartment id'${var.policy_compartment_ocid}'}"]
+  "Allow any-user to manage opensearch-family in compartment id ${var.policy_compartment_ocid}"]
   defined_tags = var.defined_tags
 }
