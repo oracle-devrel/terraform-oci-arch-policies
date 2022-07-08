@@ -77,8 +77,6 @@ Terraform does not have constructs such as If or explicit loops. However we can 
 
 Note the "Functions" element will be repleaced with the appropriate service name.  If the resource is applicable to multiple services then we can us a variation, of this:
 
-
-
 ## Notes/Issues
 
 Not all service types are supported and the content of this module will need to be extended over time.
@@ -86,7 +84,6 @@ Not all service types are supported and the content of this module will need to 
 ## URLs
 
 * OCI Policy syntax - https://docs.oracle.com/en-us/iaas/Content/Identity/Concepts/policysyntax.htm
-* 
 
 ## Contributing
 This project is open source.  Please submit your contributions by forking this repository and submitting a pull request!  Oracle appreciates any contributions that are made by the open source community.
