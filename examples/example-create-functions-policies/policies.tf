@@ -2,7 +2,7 @@
 ## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
 
 module "example-create-functions-policies" {
-  source                        = "../../"
+  source                        = "github.com/oracle-devrel/terraform-oci-arch-policies"
   providers                     = { oci = oci.homeregion }
   activate_policies_for_service = ["Functions"]
   tenancy_ocid                  = var.tenancy_ocid
