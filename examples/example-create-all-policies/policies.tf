@@ -6,8 +6,7 @@ resource "random_id" "tag" {
 }
 
 module "example_create_all_policies" {
-  #source                        = "github.com/oracle-devrel/terraform-oci-arch-policies"
-  source                        = "../../"
+  source                        = "github.com/oracle-devrel/terraform-oci-arch-policies"
   providers                     = { oci = oci.homeregion }
   activate_policies_for_service = ["Functions", "OKE", "OpenSearch", "OpenSearchUser"]
   tenancy_ocid                  = var.tenancy_ocid
