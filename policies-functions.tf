@@ -17,7 +17,6 @@ resource "oci_identity_policy" "FunctionsDevelopersManageAccessPolicy" {
 resource "oci_identity_policy" "FunctionsDevelopersManageNetworkAccessPolicy" {
   count = contains(var.activate_policies_for_service, "Functions") ? 1 : 0
 
-  depends_on     = [oci_identity_policy.FunctionsDevelopersManageAccessPolicy]
   name           = "FunctionsDevelopersManageNetworkAccessPolicy-${var.random_id}"
   description    = "FunctionsDevelopersManageNetworkAccessPolicy-${var.random_id}"
   compartment_id = var.policy_compartment_ocid
@@ -28,7 +27,6 @@ resource "oci_identity_policy" "FunctionsDevelopersManageNetworkAccessPolicy" {
 resource "oci_identity_policy" "FunctionsServiceObjectStorageManageAccessPolicy" {
   count = contains(var.activate_policies_for_service, "Functions") ? 1 : 0
 
-  depends_on     = [oci_identity_policy.FunctionsDevelopersManageNetworkAccessPolicy]
   name           = "FunctionsServiceObjectStorageManageAccessPolicy-${var.random_id}"
   description    = "FunctionsServiceObjectStorageManageAccessPolicy-${var.random_id}"
   compartment_id = var.tenancy_ocid
@@ -36,8 +34,9 @@ resource "oci_identity_policy" "FunctionsServiceObjectStorageManageAccessPolicy"
 
 }
 
+# Only create the dynamic group id we're asked to
 resource "oci_identity_dynamic_group" "FunctionsServiceDynamicGroup" {
-  count = contains(var.activate_policies_for_service, "Functions") ? 1 : 0
+  count = contains(var.activate_policies_for_service, "Functions") && (var.create_dynamic_groups) ? 1 : 0
 
   name           = "FunctionsServiceDynamicGroup-${var.random_id}"
   description    = "FunctionsServiceDynamicGroup-${var.random_id}"
@@ -46,8 +45,10 @@ resource "oci_identity_dynamic_group" "FunctionsServiceDynamicGroup" {
   defined_tags   = var.defined_tags
 }
 
+# if we're asked to create the dynamic group then this version is used to set the necessary policy
+# OTHERWISE we look to the dynamically provided name
 resource "oci_identity_policy" "FunctionsServiceDynamicGroupPolicy" {
-  count = contains(var.activate_policies_for_service, "Functions") ? 1 : 0
+  count = contains(var.activate_policies_for_service, "Functions") && (var.create_dynamic_groups) ? 1 : 0
 
   depends_on     = [oci_identity_dynamic_group.FunctionsServiceDynamicGroup]
   name           = "FunctionsServiceDynamicGroupPolicy-${var.random_id}"
@@ -57,3 +58,12 @@ resource "oci_identity_policy" "FunctionsServiceDynamicGroupPolicy" {
   defined_tags   = var.defined_tags
 }
 
+resource "oci_identity_policy" "FunctionsServiceDynamicGroupPolicyParameterized" {
+  count = contains(var.activate_policies_for_service, "Functions") && (!var.create_dynamic_groups) && (var.functions_dynamic_group_name != null) ? 1 : 0
+
+  name           = "FunctionsServiceDynamicGroupPolicy-${var.random_id}"
+  description    = "FunctionsServiceDynamicGroupPolicy-${var.random_id}"
+  compartment_id = var.tenancy_ocid
+  statements     = ["Allow dynamic-group ${var.functions_dynamic_group_name} to manage all-resources in compartment id ${var.policy_compartment_ocid}"]
+  defined_tags   = var.defined_tags
+}
