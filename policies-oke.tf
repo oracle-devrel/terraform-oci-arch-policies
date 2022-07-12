@@ -5,8 +5,8 @@
 resource "oci_identity_policy" "OKE_access_policy" {
   count = contains(var.activate_policies_for_service, "OKE") ? 1 : 0
 
-  name           = "OKE_access_policy-${var.random_id}"
-  description    = "OKE_access_policy-${var.random_id}"
+  name           = "OKEAccessPolicy-${var.random_id}"
+  description    = "OKEAccessPolicy-${var.random_id} - group manage instance-family"
   compartment_id = var.policy_compartment_ocid
   statements = ["Allow group ${var.policy_for_group} to manage instance-family in compartment id ${var.policy_compartment_ocid}",
   "Allow group ${var.policy_for_group} to use subnets in compartment id  ${var.policy_compartment_ocid}"]
