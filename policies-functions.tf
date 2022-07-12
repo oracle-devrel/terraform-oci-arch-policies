@@ -11,7 +11,8 @@ resource "oci_identity_policy" "FunctionsDevelopersManageAccessPolicy" {
   compartment_id = var.policy_compartment_ocid
   statements = ["Allow group  ${var.policy_for_group}  to manage functions-family in compartment id ${var.policy_compartment_ocid}",
   "Allow group Administrators to read metrics in compartment id ${var.policy_compartment_ocid}"]
-
+  defined_tags  = var.defined_tags
+  freeform_tags = local.implementation_module
 }
 
 resource "oci_identity_policy" "FunctionsDevelopersManageNetworkAccessPolicy" {
@@ -21,7 +22,8 @@ resource "oci_identity_policy" "FunctionsDevelopersManageNetworkAccessPolicy" {
   description    = "FunctionsDevelopersManageNetworkAccessPolicy-${var.random_id}"
   compartment_id = var.policy_compartment_ocid
   statements     = ["Allow group  ${var.policy_for_group}  to use virtual-network-family in compartment id ${var.policy_compartment_ocid}"]
-
+  defined_tags   = var.defined_tags
+  freeform_tags  = local.implementation_module
 }
 
 resource "oci_identity_policy" "FunctionsServiceObjectStorageManageAccessPolicy" {
@@ -31,7 +33,8 @@ resource "oci_identity_policy" "FunctionsServiceObjectStorageManageAccessPolicy"
   description    = "FunctionsServiceObjectStorageManageAccessPolicy-${var.random_id}"
   compartment_id = var.tenancy_ocid
   statements     = ["Allow service objectstorage-${var.region_name} to manage object-family in tenancy"]
-
+  defined_tags   = var.defined_tags
+  freeform_tags  = local.implementation_module
 }
 
 # Only create the dynamic group id we're asked to
@@ -43,6 +46,8 @@ resource "oci_identity_dynamic_group" "FunctionsServiceDynamicGroup" {
   compartment_id = var.tenancy_ocid
   matching_rule  = "ALL {resource.type = 'fnfunc', resource.compartment.id = '${var.policy_compartment_ocid}'}"
   defined_tags   = var.defined_tags
+  freeform_tags  = local.implementation_module
+
 }
 
 # if we're asked to create the dynamic group then this version is used to set the necessary policy
@@ -56,6 +61,8 @@ resource "oci_identity_policy" "FunctionsServiceDynamicGroupPolicy" {
   compartment_id = var.tenancy_ocid
   statements     = ["Allow dynamic-group ${oci_identity_dynamic_group.FunctionsServiceDynamicGroup[0].name} to manage all-resources in compartment id ${var.policy_compartment_ocid}"]
   defined_tags   = var.defined_tags
+  freeform_tags  = local.implementation_module
+
 }
 
 resource "oci_identity_policy" "FunctionsServiceDynamicGroupPolicyParameterized" {
@@ -66,4 +73,6 @@ resource "oci_identity_policy" "FunctionsServiceDynamicGroupPolicyParameterized"
   compartment_id = var.tenancy_ocid
   statements     = ["Allow dynamic-group ${var.functions_dynamic_group_name} to manage all-resources in compartment id ${var.policy_compartment_ocid}"]
   defined_tags   = var.defined_tags
+  freeform_tags  = local.implementation_module
+
 }

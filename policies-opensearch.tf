@@ -12,7 +12,9 @@ resource "oci_identity_policy" "OpenSearchNetworkPolicy" {
     "Allow service opensearch to manage vcns in compartment  id ${var.policy_compartment_ocid}",
     "Allow service opensearch to use subnets in compartment id ${var.policy_compartment_ocid}",
   "Allow service opensearch to use network-security-groups in compartment id ${var.policy_compartment_ocid}"]
-  defined_tags = var.defined_tags
+  defined_tags  = var.defined_tags
+  freeform_tags = local.implementation_module
+
 }
 
 
@@ -26,6 +28,7 @@ resource "oci_identity_policy" "OpenSearchNetworkPolicy" {
 #  statements = ["Allow group ${var.policy_for_group} to manage opensearch-clusters in compartment id ${var.policy_compartment_ocid}",
 #  "Allow group ${var.policy_for_group} to manage opensearch-family in compartment id ${var.policy_compartment_ocid}"]
 #  defined_tags = var.defined_tags
+# freeform_tags = local.implementation_module
 #}
 
 resource "oci_identity_policy" "open_search_clusters_user_policy" {
@@ -36,5 +39,7 @@ resource "oci_identity_policy" "open_search_clusters_user_policy" {
   compartment_id = var.policy_compartment_ocid
   statements = ["Allow any-user to manage opensearch-clusters in compartment id ${var.policy_compartment_ocid}",
   "Allow any-user to manage opensearch-family in compartment id ${var.policy_compartment_ocid}"]
-  defined_tags = var.defined_tags
+  defined_tags  = var.defined_tags
+  freeform_tags = local.implementation_module
+
 }
