@@ -1,4 +1,4 @@
-# Copyright (c) 2022, Oracle and/or its affiliates.
+## Copyright (c) 2022, Oracle and/or its affiliates.
 ## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at oss.oracle.com/licenses/upl
 # This module is configured based on the documentation at https://docs.oracle.com/en-us/iaas/Content/search-opensearch/Concepts/ociopensearch.htm
 
