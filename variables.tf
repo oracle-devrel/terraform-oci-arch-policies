@@ -3,3 +3,5 @@
 
 # Only using variables.tf for vars needed within the module or passed to submodules
 # this module only uses inputs.tf and outputs.tf
+
+locals { implementation_module = { "implementation_module" = "policies" } }
