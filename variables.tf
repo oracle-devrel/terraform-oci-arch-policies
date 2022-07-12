@@ -1,62 +1,7 @@
 ## Copyright (c) 2022, Oracle and/or its affiliates.
 ## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at http://oss.oracle.com/licenses/upl
 
-variable "activate_policies_for_service" {
-  type        = list(string)
-  description = "List of services where we need to activate policies e.g. if the listy was initialized as activate_policies_for_service = list {'APIGW', 'Functions'} then the polices for these services would be created"
-  validation {
-    condition     = length(var.activate_policies_for_service) >= 1
-    error_message = "List of policies to enable using the  to the policies module not set."
-  }
-}
+# Only using variables.tf for vars needed within the module or passed to submodules
+# this module only uses inputs.tf and outputs.tf
 
-variable "policy_compartment_ocid" {
-  type        = string
-  description = "OCID for the compartment the policies should be configured in and applied to"
-  validation {
-    condition     = length(var.policy_compartment_ocid) > 1
-    error_message = "Policy compartment id not provided to the policies module."
-  }
-}
-
-variable "tenancy_ocid" {
-  type        = string
-  description = "OCID for the tenancy the policies should be configured in and applied to"
-  validation {
-    condition     = length(var.tenancy_ocid) > 1
-    error_message = "Policy compartment id not provided to the policies module."
-  }
-}
-
-variable "random_id" {
-  type        = string
-  description = "Random ID to use in the names to distinguish them"
-  validation {
-    condition     = length(var.random_id) >= 1
-    error_message = "Policy random id not provided to the policies module."
-  }
-}
-
-variable "region_name" {
-  type        = string
-  description = "name of the region being used"
-  validation {
-    condition     = length(var.region_name) >= 3
-    error_message = "Policy region name not provided to the policies module."
-  }
-}
-
-variable "defined_tags" {
-  description = "The Predefined tags to apply to the policies being created"
-  default     = {}
-}
-
-variable "policy_for_group" {
-  type        = string
-  description = "name of the group policies should be granted to when applied"
-  default     = "Administrators"
-  validation {
-    condition     = length(var.policy_for_group) >= 3
-    error_message = "The group name to attribute policy privileges to is not valid."
-  }
-}
+locals { implementation_module = { "implementation_module" = "policies" } }

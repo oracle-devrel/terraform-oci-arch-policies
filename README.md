@@ -55,6 +55,8 @@ module "oci-policies" {
 | random_id                     | An Id that will mean that the Terraform being reused will not clash with any possible pre-existing deployments being used |
 | region_name                   | Name of the region for the policy. Needed for some policies such as storage e.g. *us-ashburn-1* |
 | defined_tags                  | Predefined Tags to be associated with each resource created. e.g. linking resources to a single solution |
+| create_dynamic_groups         | A boolean flag that is defaulted to true. When set where policies depend upon dynamic groups then the dynamic group will be created using the default names.  If you want to supply your own dynamic group then this needs to be explicitly set to FALSE |
+| functions_dynamic_group_name  | The dynamic group name to use for the Functions policies setup. By providing the name it is assumed that the resource already exists. and has been created externally. |
 
 
 
@@ -66,6 +68,12 @@ module "oci-policies" {
 | OKE                                   | Policies for Oracle Kubernetes Engine (OKE)                  |
 | OpenSearch                            | Policies needed for the creation of the OpenSearch service.  |
 | OpenSearchUser                        | A variant of the OpenSearch policies where rather than attributing group permissions the policies are attributed to any-user |
+
+### Outputs
+
+| Output Name                  | Description                                                  |
+| ---------------------------- | ------------------------------------------------------------ |
+| functions_dynamic_group_name | if the dynamic group is created with the policies then the name of the group is provided here |
 
 ### How Policy Creation is Selected
 
