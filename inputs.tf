@@ -28,15 +28,6 @@ variable "tenancy_ocid" {
   }
 }
 
-variable "random_id" {
-  type        = string
-  description = "Random ID to use in the names to distinguish them"
-  validation {
-    condition     = length(var.random_id) >= 1
-    error_message = "Policy random id not provided to the policies module."
-  }
-}
-
 variable "region_name" {
   type        = string
   description = "name of the region being used"
@@ -44,11 +35,6 @@ variable "region_name" {
     condition     = length(var.region_name) >= 3
     error_message = "Policy region name not provided to the policies module."
   }
-}
-
-variable "defined_tags" {
-  description = "The Predefined tags to apply to the policies being created"
-  default     = {}
 }
 
 variable "policy_for_group" {
