@@ -20,7 +20,7 @@ resource "oci_identity_dynamic_group" "oke_worker_dynamic_group" {
 
   compartment_id = var.tenancy_ocid
   description    = "OKEInstancePrincipleDynamicGrp-${module.tags.random_id}-Dynamic group for worker nodes in OKE cluster"
-  matching_rule  = "ALL {instance.compartment.id = '${var.compartment_ocid}', tag.oke-${random_id.tag.hex}.autoscaler.value = 'true'}"
+  matching_rule  = "ALL {instance.compartment.id = '${var.policy_compartment_ocid}', tag.oke-${module.tags.random_id}.autoscaler.value = 'true'}"
   name           = "OKEInstancePrincipleDynamicGrp-${module.tags.random_id}"
   defined_tags   = module.tags.predefined_tags
   freeform_tags  = local.implementation_module
@@ -33,11 +33,11 @@ resource "oci_identity_policy" "this" {
   compartment_id = var.policy_compartment_ocid
   description    = "Policy to enable OKE cluster autoscaling"
   name           = "oke_autoscaler_instances-${module.tags.random_id}"
-  statements = ["Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group.name} to manage cluster-node-pools in compartment ${var.policy_compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group.name} to manage instance-family in compartment ${var.policy_compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group.name} to use subnets in compartment ${var.policy_compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group.name} to use vnics in compartment ${var.policy_compartment_ocid}",
-  "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group.name} to inspect compartments in compartment ${var.policy_compartment_ocid}"]
+  statements = ["Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to manage cluster-node-pools in compartment ${var.policy_compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to manage instance-family in compartment ${var.policy_compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use subnets in compartment ${var.policy_compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use vnics in compartment ${var.policy_compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to inspect compartments in compartment ${var.policy_compartment_ocid}"]
   defined_tags  = module.tags.predefined_tags
   freeform_tags = local.implementation_module
 
@@ -49,10 +49,10 @@ resource "oci_identity_policy" "network_policies" {
   compartment_id = var.policy_compartment_ocid
   description    = "Policy to enable OKE cluster autoscaling"
   name           = "oke_autoscaler_networking-${module.tags.random_id}"
-  statements = ["Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group.name} to use subnets in compartment ${var.policy_compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group.name} to read virtual-network-family in compartment ${var.policy_compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group.name} to use vnics in compartment ${var.policy_compartment_ocid}",
-  "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group.name} to inspect compartments in compartment ${var.policy_compartment_ocid}"]
+  statements = ["Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use subnets in compartment ${var.policy_compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to read virtual-network-family in compartment ${var.policy_compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use vnics in compartment ${var.policy_compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to inspect compartments in compartment ${var.policy_compartment_ocid}"]
   defined_tags  = module.tags.predefined_tags
   freeform_tags = local.implementation_module
 
