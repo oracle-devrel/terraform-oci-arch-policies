@@ -8,9 +8,9 @@ resource "oci_identity_policy" "FunctionsDevelopersManageAccessPolicy" {
 
   name           = "FunctionsDevelopersManageAccessPolicy-${module.tags.random_id}"
   description    = "FunctionsDevelopersManageAccessPolicy-${module.tags.random_id} - group can manage metrics"
-  compartment_id = var.policy_compartment_ocid
-  statements = ["Allow group  ${var.policy_for_group}  to manage functions-family in compartment id ${var.policy_compartment_ocid}",
-  "Allow group Administrators to read metrics in compartment id ${var.policy_compartment_ocid}"]
+  compartment_id = var.compartment_ocid
+  statements = ["Allow group  ${var.policy_for_group}  to manage functions-family in compartment id ${var.compartment_ocid}",
+  "Allow group Administrators to read metrics in compartment id ${var.compartment_ocid}"]
   defined_tags  = module.tags.predefined_tags
   freeform_tags = local.implementation_module
 }
@@ -20,8 +20,8 @@ resource "oci_identity_policy" "FunctionsDevelopersManageNetworkAccessPolicy" {
 
   name           = "FunctionsDevelopersManageNetworkAccessPolicy-${module.tags.random_id}"
   description    = "FunctionsDevelopersManageNetworkAccessPolicy-${module.tags.random_id} - group use virtual-network-family"
-  compartment_id = var.policy_compartment_ocid
-  statements     = ["Allow group  ${var.policy_for_group}  to use virtual-network-family in compartment id ${var.policy_compartment_ocid}"]
+  compartment_id = var.compartment_ocid
+  statements     = ["Allow group  ${var.policy_for_group}  to use virtual-network-family in compartment id ${var.compartment_ocid}"]
   defined_tags   = module.tags.predefined_tags
   freeform_tags  = local.implementation_module
 }
@@ -44,7 +44,7 @@ resource "oci_identity_dynamic_group" "FunctionsServiceDynamicGroup" {
   name           = "FunctionsServiceDynamicGroup-${module.tags.random_id}"
   description    = "FunctionsServiceDynamicGroup-${module.tags.random_id} - work with functions"
   compartment_id = var.tenancy_ocid
-  matching_rule  = "ALL {resource.type = 'fnfunc', resource.compartment.id = '${var.policy_compartment_ocid}'}"
+  matching_rule  = "ALL {resource.type = 'fnfunc', resource.compartment.id = '${var.compartment_ocid}'}"
   defined_tags   = module.tags.predefined_tags
   freeform_tags  = local.implementation_module
 
@@ -59,7 +59,7 @@ resource "oci_identity_policy" "FunctionsServiceDynamicGroupPolicy" {
   name           = "FunctionsServiceDynamicGroupPolicy-${module.tags.random_id}"
   description    = "FunctionsServiceDynamicGroupPolicy-${module.tags.random_id} - dynamic group resources policy"
   compartment_id = var.tenancy_ocid
-  statements     = ["Allow dynamic-group ${oci_identity_dynamic_group.FunctionsServiceDynamicGroup[0].name} to manage all-resources in compartment id ${var.policy_compartment_ocid}"]
+  statements     = ["Allow dynamic-group ${oci_identity_dynamic_group.FunctionsServiceDynamicGroup[0].name} to manage all-resources in compartment id ${var.compartment_ocid}"]
   defined_tags   = module.tags.predefined_tags
   freeform_tags  = local.implementation_module
 
@@ -71,7 +71,7 @@ resource "oci_identity_policy" "FunctionsServiceDynamicGroupPolicyParameterized"
   name           = "FunctionsServiceDynamicGroupPolicy-${module.tags.random_id}"
   description    = "FunctionsServiceDynamicGroupPolicy-${module.tags.random_id} - named dynamic group all resources policy"
   compartment_id = var.tenancy_ocid
-  statements     = ["Allow dynamic-group ${var.functions_dynamic_group_name} to manage all-resources in compartment id ${var.policy_compartment_ocid}"]
+  statements     = ["Allow dynamic-group ${var.functions_dynamic_group_name} to manage all-resources in compartment id ${var.compartment_ocid}"]
   defined_tags   = module.tags.predefined_tags
   freeform_tags  = local.implementation_module
 
