@@ -62,9 +62,18 @@ variable "functions_dynamic_group_name" {
   default     = null
 }
 
+# the following are used to setup the tags
 variable "release" {
   type        = string
   nullable    = false
   default     = "1.0"
   description = "Reference Architecture Release (OCI Architecture Center) - note this is validated in the tags module"
+}
+
+# if you want to explicitly force the random id used in tagging, set this value
+variable "random_id" {
+  type        = string
+  nullable    = true
+  default     = null
+  description = "Random Id to help ensure name collisions dont occur"
 }
