@@ -10,6 +10,8 @@ The driver for having a policies module is to adopt a DRY approach to defining p
 - It means that the module can be referenced early in the parent terraform we can affect a situation where when applying the Terraform, if policies cant be established to support all the resources, then we don't lose time waiting for the other services before the process fails. i.e fail fast
 - If any services require a new policy or are impacted by possible change - we can fix all the dependent Terraform solutions in one place rather than applying the same changes to multiple repositories.
 
+This module also makes use of the tags module - so simplifying any further setup. But will allow you to pass through overriding values.
+
 ## Getting Started
 Examples of how to call the module are provided in the /examples folder. The parameters a detailed below.
 
@@ -34,13 +36,17 @@ To deploy the policies using this Module with minimal effort use this:
 
 ```
 module "oci-policies" {
-  source                  = "github.com/oracle-devrel/terraform-oci-arch-policies"
-  compartment_ocid        = ${var.compartment_ocid}
-  tenancy_ocid            = ${var.tenanncy_id}
-  policy_compartment_ocid = ${var.policy_compartment_ocid}
-  random_id               = ${var.random_id}
-  region_name             = ${var.region_name}
-  defined_tags            = ${var.defined_tags}
+  source                        = "github.com/oracle-devrel/terraform-oci-arch-policies"
+  compartment_ocid              = ${var.compartment_ocid}
+  tenancy_ocid                  = ${var.tenanncy_id}
+  policy_compartment_ocid       = ${var.policy_compartment_ocid}
+  random_id                     = random_id.tag.hex
+  release                       = "2.5.1"
+  region_name                   = ${var.region_name}
+  activate_policies_for_service = ["OCI", "Functions"]
+  policy_for_group              = "MyUserGroup"
+  create_dynamic_groups         = true
+  functions_dynamic_group_name  = "myAlternativeGroupName"
 }
 ```
 #### Configuration Description
@@ -48,13 +54,13 @@ module "oci-policies" {
 | Argument                      | Description                                                  |
 | ----------------------------- | ------------------------------------------------------------ |
 | source                        | The URL location of the module for Terraform to retrieve content |
-| activate_policies_for_service | This is a list of the services for which we want to have policies enabled for |
+| activate_policies_for_service | This is a list of the services for which we want to have policies enabled for. The table belowdescribes the acceptable values |
 | tenancy_ocid                  | The OCID for the tenancy - needed for creating dynamic group policies |
-| policy_compartment_ocid       | The OCID of the compartment that contains the service the policy relates to. It is also the location of where the policy will be placed. |
+| compartment_ocid              | The OCID of the compartment that contains the service the policy relates to. It is also the location of where the policy will be placed. |
 | policy_for_group              | For policies relating to groups this can be used to name the group. If undefined then the value defaults to Administrators |
-| random_id                     | An Id that will mean that the Terraform being reused will not clash with any possible pre-existing deployments being used |
+| random_id                     | An Id that will mean that the Terraform being reused will not clash with any possible pre-existing deployments being used - this is optional, if not provided one is generated|
+| release                       | release value to be provided for the tag. Should reflect the release of the full Terraform solution |
 | region_name                   | Name of the region for the policy. Needed for some policies such as storage e.g. *us-ashburn-1* |
-| defined_tags                  | Predefined Tags to be associated with each resource created. e.g. linking resources to a single solution |
 | create_dynamic_groups         | A boolean flag that is defaulted to true. When set where policies depend upon dynamic groups then the dynamic group will be created using the default names.  If you want to supply your own dynamic group then this needs to be explicitly set to FALSE |
 | functions_dynamic_group_name  | The dynamic group name to use for the Functions policies setup. By providing the name it is assumed that the resource already exists. and has been created externally. |
 
@@ -66,6 +72,7 @@ module "oci-policies" {
 | ------------------------------------- | ------------------------------------------------------------ |
 | Functions                             | Policies to support OCI Functions                            |
 | OKE                                   | Policies for Oracle Kubernetes Engine (OKE)                  |
+| OKEDynamic                            | Enhanced version of OKE which will include the policies needed to alow OKE to dynamically scale|
 | OpenSearch                            | Policies needed for the creation of the OpenSearch service.  |
 | OpenSearchUser                        | A variant of the OpenSearch policies where rather than attributing group permissions the policies are attributed to any-user |
 
@@ -74,6 +81,9 @@ module "oci-policies" {
 | Output Name                  | Description                                                  |
 | ---------------------------- | ------------------------------------------------------------ |
 | functions_dynamic_group_name | if the dynamic group is created with the policies then the name of the group is provided here |
+|oke_dynamic_group |Dynamic Group created for OKE compute nodes|
+|predefined_tags|The predefined tags provided through the use of the tags module|
+|random_id|The random id used by the tagging module|
 
 ### How Policy Creation is Selected
 
