@@ -6,6 +6,6 @@ module "example-create-functions-policies" {
   source                        = "github.com/oracle-devrel/terraform-oci-arch-policies"
   activate_policies_for_service = ["Functions"]
   tenancy_ocid                  = var.tenancy_ocid
-  policy_compartment_ocid       = var.compartment_ocid
+  compartment_ocid              = var.compartment_ocid
   region_name                   = var.region
 }
