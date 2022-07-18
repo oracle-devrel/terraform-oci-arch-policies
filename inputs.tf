@@ -10,11 +10,12 @@ variable "activate_policies_for_service" {
   }
 }
 
-variable "policy_compartment_ocid" {
+variable "compartment_ocid" {
   type        = string
+  nullable    = false
   description = "OCID for the compartment the policies should be configured in and applied to"
   validation {
-    condition     = length(var.policy_compartment_ocid) > 1
+    condition     = length(var.compartment_ocid) > 1
     error_message = "Policy compartment id not provided to the policies module."
   }
 }
@@ -59,4 +60,11 @@ variable "functions_dynamic_group_name" {
   description = "the name of the dynamic group for Functions to be applied to. Existance of the name is interpreted as meaning the DynamicGroup exists"
   nullable    = true
   default     = null
+}
+
+variable "release" {
+  type        = string
+  nullable    = false
+  default     = "1.0"
+  description = "Reference Architecture Release (OCI Architecture Center) - note this is validated in the tags module"
 }
