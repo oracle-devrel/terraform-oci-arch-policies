@@ -6,9 +6,9 @@ resource "oci_identity_policy" "api_gateway_access_policy" {
 
   name           = "APIGatewayAccessPolicy-${module.tags.random_id}"
   description    = "APIGatewayAccessPolicy-${module.tags.random_id} - group manage  api-gateway-family"
-  compartment_id = var.policy_compartment_ocid
-  statements = ["Allow group ${var.policy_for_group} to manage api-gateway-family in compartment id ${var.policy_compartment_ocid}",
-  "Allow group ${var.policy_for_group} to manage api-gateway-family in compartment id ${var.policy_compartment_ocid}"]
+  compartment_id = var.compartment_ocid
+  statements = ["Allow group ${var.policy_for_group} to manage api-gateway-family in compartment id ${var.compartment_ocid}",
+  "Allow group ${var.policy_for_group} to manage api-gateway-family in compartment id ${var.compartment_ocid}"]
   defined_tags  = module.tags.predefined_tags
   freeform_tags = local.implementation_module
 }

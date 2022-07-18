@@ -7,11 +7,11 @@ resource "oci_identity_policy" "open_search_network_policy" {
 
   name           = "OpenSearchNetworkPolicy-${module.tags.random_id}"
   description    = "OpenSearchNetworkPolicy-${module.tags.random_id} - allow OpenSearch to interact with networking"
-  compartment_id = var.policy_compartment_ocid
-  statements = ["Allow service opensearch to manage vnics in compartment id ${var.policy_compartment_ocid}",
-    "Allow service opensearch to manage vcns in compartment  id ${var.policy_compartment_ocid}",
-    "Allow service opensearch to use subnets in compartment id ${var.policy_compartment_ocid}",
-  "Allow service opensearch to use network-security-groups in compartment id ${var.policy_compartment_ocid}"]
+  compartment_id = var.compartment_ocid
+  statements = ["Allow service opensearch to manage vnics in compartment id ${var.compartment_ocid}",
+    "Allow service opensearch to manage vcns in compartment  id ${var.compartment_ocid}",
+    "Allow service opensearch to use subnets in compartment id ${var.compartment_ocid}",
+  "Allow service opensearch to use network-security-groups in compartment id ${var.compartment_ocid}"]
   defined_tags  = module.tags.predefined_tags
   freeform_tags = local.implementation_module
 
@@ -25,9 +25,9 @@ resource "oci_identity_policy" "open_search_clusters_policy" {
 
   name           = "OpenSearchClustersPolicy-${module.tags.random_id}"
   description    = "OpenSearchClustersPolicy-${module.tags.random_id} - group interact with opensearch family"
-  compartment_id = var.policy_compartment_ocid
-  statements = ["Allow group ${var.policy_for_group} to manage opensearch-clusters in compartment id ${var.policy_compartment_ocid}",
-  "Allow group ${var.policy_for_group} to manage opensearch-family in compartment id ${var.policy_compartment_ocid}"]
+  compartment_id = var.compartment_ocid
+  statements = ["Allow group ${var.policy_for_group} to manage opensearch-clusters in compartment id ${var.compartment_ocid}",
+  "Allow group ${var.policy_for_group} to manage opensearch-family in compartment id ${var.compartment_ocid}"]
   defined_tags  = module.tags.predefined_tags
   freeform_tags = local.implementation_module
 }
@@ -37,9 +37,9 @@ resource "oci_identity_policy" "open_search_clusters_user_policy" {
 
   name           = "OpenSearchClustersUserPolicy-${module.tags.random_id}"
   description    = "OpenSearchClustersUserPolicy-${module.tags.random_id} - user manage OpenSearch policy family"
-  compartment_id = var.policy_compartment_ocid
-  statements = ["Allow any-user to manage opensearch-clusters in compartment id ${var.policy_compartment_ocid}",
-  "Allow any-user to manage opensearch-family in compartment id ${var.policy_compartment_ocid}"]
+  compartment_id = var.compartment_ocid
+  statements = ["Allow any-user to manage opensearch-clusters in compartment id ${var.compartment_ocid}",
+  "Allow any-user to manage opensearch-family in compartment id ${var.compartment_ocid}"]
   defined_tags  = module.tags.predefined_tags
   freeform_tags = local.implementation_module
 
