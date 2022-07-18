@@ -6,10 +6,10 @@ module "example_create_all_policies" {
   #source = "./../../"
   source = "github.com/oracle-devrel/terraform-oci-arch-policies"
 
-  #providers                     = { oci = oci.homeregion }
   activate_policies_for_service = ["Functions", "OKE", "OpenSearch", "OpenSearchUser", "OpenSearch"]
   tenancy_ocid                  = var.tenancy_ocid
   compartment_ocid              = var.compartment_ocid
   region_name                   = var.region
   release                       = "2.0"
+  random_id                     = "PW30"
 }
