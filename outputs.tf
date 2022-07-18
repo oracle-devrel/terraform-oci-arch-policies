@@ -11,3 +11,14 @@ output "oke_dynamic_group" {
   value       = oci_identity_dynamic_group.oke_worker_dynamic_group
 
 }
+
+# if the module is allowed to setup the tags for use then these values will be populated
+output "predefined_tags" {
+  value       = module.tags.predefined_tags
+  description = "The default generated tags"
+}
+
+output "random_id" {
+  value       = module.tags.random_id
+  description = "Random string used in the tag - provided incase needed elsewhere"
+}
