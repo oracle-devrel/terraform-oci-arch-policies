@@ -12,4 +12,5 @@ module "example_create_all_policies" {
   region_name                   = var.region
   release                       = "2.0"
   random_id                     = "PW30"
+  tag_namespace                 = "test-policies-all-namespace"
 }

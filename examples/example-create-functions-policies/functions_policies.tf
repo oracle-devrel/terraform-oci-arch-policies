@@ -8,4 +8,7 @@ module "example-create-functions-policies" {
   tenancy_ocid                  = var.tenancy_ocid
   compartment_ocid              = var.compartment_ocid
   region_name                   = var.region
+  tag_namespace                 = "test-policies-function-namespace"
+  release                       = "1.6"
+  random_id                     = "PW1"
 }
