@@ -7,7 +7,7 @@ output "functions_dynamic_group" {
 }
 
 output "oke_dynamic_group" {
-  description = " Dynamic Group created for OKE compute nodes"
+  description = "Dynamic Group created for OKE compute nodes"
   value       = oci_identity_dynamic_group.oke_worker_dynamic_group
 
 }
