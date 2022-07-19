@@ -70,6 +70,12 @@ variable "release" {
   description = "Reference Architecture Release (OCI Architecture Center) - note this is validated in the tags module"
 }
 
+variable "tag_namespace" {
+  type        = string
+  nullable    = false
+  description = "This is the name of this Reference Architecture e.g. cloud-native-mysql-oci"
+}
+
 # if you want to explicitly force the random id used in tagging, set this value
 variable "random_id" {
   type        = string
