@@ -4,8 +4,8 @@
 module "tags" {
   #source = "../terraform-oci-arch-tags"
   source           = "github.com/oracle-devrel/terraform-oci-arch-tags"
-  tag_namespace    = "terraform-oci-arch-test-name"
   compartment_ocid = var.compartment_ocid
   release          = var.release
   random_id        = var.random_id # provide the optional value
+  tag_namespace    = var.tag_namespace
 }
