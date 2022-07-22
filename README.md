@@ -30,7 +30,11 @@ A Module is a canonical, reusable, best-practices definition for how to run a si
 Each Module has the following folder structure:
 
 - root: This folder contains the core module. The Terraform files are structured with a naming convention *policies-<servicename>*. With policies that can apply to everything going into *policies-common*.
-- /examples: This folder contains examples of how to use the module
+- /examples: This folder contains examples of how to use the module.
+
+This module can be extended with new policy requirements. BUT policies should not be granted for tenancy level permissions UNLESS that is the only option OCI supports as doing so can remove good quality security / separation of concerns.
+
+In many cases the policies the policies setup are adapted from the outlines the documentation for the service.
 
 To deploy the policies using this Module with minimal effort use this:
 
@@ -51,20 +55,25 @@ module "oci-policies" {
 ```
 #### Configuration Description
 
-| Argument                      | Description                                                  |
-| ----------------------------- | ------------------------------------------------------------ |
-| source                        | The URL location of the module for Terraform to retrieve content |
-| activate_policies_for_service | This is a list of the services for which we want to have policies enabled for. The table belowdescribes the acceptable values |
-| tenancy_ocid                  | The OCID for the tenancy - needed for creating dynamic group policies |
-| compartment_ocid              | The OCID of the compartment that contains the service the policy relates to. It is also the location of where the policy will be placed. |
-| policy_for_group              | For policies relating to groups this can be used to name the group. If undefined then the value defaults to Administrators |
-| random_id                     | An Id that will mean that the Terraform being reused will not clash with any possible pre-existing deployments being used - this is optional, if not provided one is generated|
-| release                       | release value to be provided for the tag. Should reflect the release of the full Terraform solution |
-| region_name                   | Name of the region for the policy. Needed for some policies such as storage e.g. *us-ashburn-1* |
-| create_dynamic_groups         | A boolean flag that is defaulted to true. When set where policies depend upon dynamic groups then the dynamic group will be created using the default names.  If you want to supply your own dynamic group then this needs to be explicitly set to FALSE |
-| functions_dynamic_group_name  | The dynamic group name to use for the Functions policies setup. By providing the name it is assumed that the resource already exists. and has been created externally. |
+| Argument                      | Description                                                  | Used Policies*        |
+| ----------------------------- | ------------------------------------------------------------ | --------------------- |
+| source                        | The URL location of the module for Terraform to retrieve content |                       |
+| activate_policies_for_service | This is a list of the services for which we want to have policies enabled for. The table below describes the acceptable values |                       |
+| tenancy_ocid                  | The OCID for the tenancy - needed for creating dynamic group policies |                       |
+| compartment_ocid              | The OCID of the compartment that contains the service the policy relates to. It is also the location of where the policy will be placed. |                       |
+| policy_for_group              | For policies relating to the group this can be used to setup and manipulate services. If undefined, then the value defaults to Administrators |                       |
+| tag_namespace                 | The name to be used in the tag namespace - passed down to the tags module. |                       |
+| random_id                     | An Id that will mean that the Terraform being reused will not clash with any possible pre-existing deployments being used - this is optional, if not provided, one is generated |                       |
+| release                       | release value to be provided for the tag. Should reflect the release of the full Terraform solution |                       |
+| region_name                   | Name of the region for the policy. Needed for some policies such as storage e.g., *us-ashburn-1* |                       |
+| create_dynamic_groups         | A boolean flag that is defaulted to true. When set where policies depend upon dynamic groups, then the dynamic group will be created using the default names.  If you want to supply your own dynamic group, then this needs to be explicitly set to FALSE | Functions, OKEDynamic |
+| functions_dynamic_group_name  | The dynamic group name to use for the Functions policies setup. By providing the name, it is assumed that the resource already exists, and has been created externally. | Functions             |
+| devops_dg_name                | The Dynamic Group identifying the resources needing to manipulate related services as the capacity expands and contracts. | DevOps                |
+| devops_app_name               | The name to be associated with the DevOps resource deescription | DevOps                |
+| logging_dg_name               | The name of the Dynamic group that that consumes logging resources | Logging               |
+| logging_user_group_name       | The user group name that only require sufficient permissions to interact with the ogs. This is expected to be a broader group than those identified via the policy_for_group. The policies will have lower privileges defined. | Logging               |
 
-
+*If the field is blank then it applies to all policies.
 
 #### PolicyFlags
 
@@ -72,32 +81,37 @@ module "oci-policies" {
 | ------------------------------------- | ------------------------------------------------------------ |
 | Functions                             | Policies to support OCI Functions                            |
 | OKE                                   | Policies for Oracle Kubernetes Engine (OKE)                  |
-| OKEDynamic                            | Enhanced version of OKE which will include the policies needed to alow OKE to dynamically scale|
-| OpenSearch                            | Policies needed for the creation of the OpenSearch service.  |
-| OpenSearchUser                        | A variant of the OpenSearch policies where rather than attributing group permissions the policies are attributed to any-user |
+| OKEDynamic                            | Enhanced version of OKE, which will include the policies needed to allow OKE to dynamically scale |
+| OpenSearch                            | Policies are needed for the creation of the OpenSearch service. |
+| OpenSearchUser                        | A variant of the OpenSearch policies where rather than attributing group permissions, the policies are attributed to any-user |
+|APIGW | Policies to support the use of the OCI API Gateway |
+|Network| Sets up policies for using the general Network Family-related policies |
+|DevOps| Sets up the policies needed for the use of DevOps resources|
+|Logging| Set the policies to allow resources to be created for Logging activities and grant acccess to users needing to use logging services. |
+
 
 ### Outputs
 
 | Output Name                  | Description                                                  |
 | ---------------------------- | ------------------------------------------------------------ |
-| functions_dynamic_group_name | if the dynamic group is created with the policies then the name of the group is provided here |
+| functions_dynamic_group_name | if the dynamic group is created with the policies, then the name of the group is provided here |
 |oke_dynamic_group |Dynamic Group created for OKE compute nodes|
-|predefined_tags|The predefined tags provided through the use of the tags module|
+|predefined_tags|The predefined tags are provided through the use of the tags module|
 |random_id|The random id used by the tagging module|
 
 ### How Policy Creation is Selected
 
-Terraform does not have constructs such as If or explicit loops. However we can affect a conditional behaviour for an entire by setting a count, which turns the resource into a list creation process. If  the list length is 0 in length then the resource is nolonger going to be created. as a result every resource will start with something like the following:
+Terraform does not have constructs such as If or explicit loops. However, we can affect a conditional behavior for an entire by setting a count, which turns the resource into a list creation process. If  the list length is 0 in length, then the resource is no longer going to be created. as a result, every resource will start with something like the following:
 
 ```
   count = contains(var.activate_policies_for_service, "Functions") ? 1 : 0
 ```
 
-Note the "Functions" element will be repleaced with the appropriate service name.  If the resource is applicable to multiple services then we can us a variation, of this:
+Note the "Functions" element will be replaced with the appropriate service name.  If the resource is applicable to multiple services, then we can use a variation, of this:
 
 ## Notes/Issues
 
-Not all service types are supported and the content of this module will need to be extended over time.
+Not all service types are supported, and the content of this module will need to be extended over time.
 
 ## URLs
 
