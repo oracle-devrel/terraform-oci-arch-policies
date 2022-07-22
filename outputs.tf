@@ -3,7 +3,7 @@
 
 output "functions_dynamic_group" {
   description = "Some policies are dependent on having a dynamic group - if if the module is told to create the dynamic group then the resource is made available here"
-  value       = oci_identity_dynamic_group.FunctionsServiceDynamicGroup
+  value       = oci_identity_dynamic_group.functions_service_dynamic_group
 }
 
 output "oke_dynamic_group" {
