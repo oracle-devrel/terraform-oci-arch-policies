@@ -27,17 +27,17 @@ resource "oci_identity_dynamic_group" "oke_worker_dynamic_group" {
 
 }
 
-resource "oci_identity_policy" "this" {
+resource "oci_identity_policy" "oke_autoscale_policy" {
   count = contains(var.activate_policies_for_service, "OKEDynamic") ? 1 : 0
 
   compartment_id = var.compartment_ocid
   description    = "Policy to enable OKE cluster autoscaling"
   name           = "oke_autoscaler_instances-${module.tags.random_id}"
-  statements = ["Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to manage cluster-node-pools in compartment ${var.compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to manage instance-family in compartment ${var.compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use subnets in compartment ${var.compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use vnics in compartment ${var.compartment_ocid}",
-  "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to inspect compartments in compartment ${var.compartment_ocid}"]
+  statements = ["Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to manage cluster-node-pools in compartment id ${var.compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to manage instance-family in compartment id ${var.compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use subnets in compartment od ${var.compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use vnics in compartment id ${var.compartment_ocid}",
+  "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to inspect compartments in compartment id ${var.compartment_ocid}"]
   defined_tags  = module.tags.predefined_tags
   freeform_tags = local.implementation_module
 
@@ -49,10 +49,10 @@ resource "oci_identity_policy" "network_policies" {
   compartment_id = var.compartment_ocid
   description    = "Policy to enable OKE cluster autoscaling"
   name           = "oke_autoscaler_networking-${module.tags.random_id}"
-  statements = ["Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use subnets in compartment ${var.compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to read virtual-network-family in compartment ${var.compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use vnics in compartment ${var.compartment_ocid}",
-  "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to inspect compartments in compartment ${var.compartment_ocid}"]
+  statements = ["Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use subnets in compartment id ${var.compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to read virtual-network-family in compartment id ${var.compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use vnics in compartment id ${var.compartment_ocid}",
+  "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to inspect compartments in compartment id ${var.compartment_ocid}"]
   defined_tags  = module.tags.predefined_tags
   freeform_tags = local.implementation_module
 
