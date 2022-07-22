@@ -81,5 +81,34 @@ variable "random_id" {
   type        = string
   nullable    = true
   default     = null
-  description = "Random Id to help ensure name collisions dont occur"
+  description = "Random Id to help ensure name collisions don't occur"
+}
+
+variable "devops_dg_name" {
+  type        = string
+  description = "This identifies the name of the name of the dynamic group for devops processes to have sufficient privileges to operate the devops platform"
+  nullable    = true
+  default     = null
+}
+
+
+variable "devops_app_name" {
+  type        = string
+  description = "This identifies the name of the app the devops processes to have been established for"
+  nullable    = true
+  default     = null
+}
+
+variable "logging_dg_name" {
+  type        = string
+  description = "This identifies the name of the name of the dynamic group for devops processes to have sufficient privileges to operate the devops platform"
+  nullable    = true
+  default     = null
+}
+
+variable "logging_user_group_name" {
+  type        = string
+  description = "Users performing logging analysis are assumed to not need the same levels of access granted by policies to those users operating the platform"
+  nullable    = true
+  default     = null
 }
