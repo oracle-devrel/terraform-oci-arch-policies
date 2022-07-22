@@ -2,7 +2,7 @@
 ## All rights reserved. The Universal Permissive License (UPL), Version 1.0 as shown at oss.oracle.com/licenses/upl
 
 
-# Functions Policies -- see readme for explination of the use of count
+# Functions Policies -- see readme for more of the use of count
 resource "oci_identity_policy" "FunctionsDevelopersManageAccessPolicy" {
   count = contains(var.activate_policies_for_service, "Functions") ? 1 : 0
 
@@ -13,6 +13,19 @@ resource "oci_identity_policy" "FunctionsDevelopersManageAccessPolicy" {
   "Allow group Administrators to read metrics in compartment id ${var.compartment_ocid}"]
   defined_tags  = module.tags.predefined_tags
   freeform_tags = local.implementation_module
+}
+
+
+resource "oci_identity_policy" "FunctionsServiceNetworkAccessPolicy" {
+  count = contains(var.activate_policies_for_service, "Functions") ? 1 : 0
+
+  depends_on     = [oci_identity_policy.FunctionsDevelopersManageNetworkAccessPolicy]
+  name           = "FunctionsDevelopersManageAccessPolicy-${module.tags.random_id}"
+  description    = "FunctionsDevelopersManageAccessPolicy-${module.tags.random_id} - group can manage metrics"
+  compartment_id = var.tenancy_ocid
+  statements     = ["Allow service FaaS to use virtual-network-family in compartment id ${var.compartment_ocid}"]
+  defined_tags   = module.tags.predefined_tags
+  freeform_tags  = local.implementation_module
 }
 
 resource "oci_identity_policy" "FunctionsDevelopersManageNetworkAccessPolicy" {
@@ -74,5 +87,58 @@ resource "oci_identity_policy" "FunctionsServiceDynamicGroupPolicyParameterized"
   statements     = ["Allow dynamic-group ${var.functions_dynamic_group_name} to manage all-resources in compartment id ${var.compartment_ocid}"]
   defined_tags   = module.tags.predefined_tags
   freeform_tags  = local.implementation_module
+
+}
+
+resource "oci_identity_policy" "FunctionstoServices" {
+  count          = contains(var.activate_policies_for_service, "FunctionstoStreams") && (!var.create_dynamic_groups) && (var.functions_dynamic_group_name != null) ? 1 : 0
+  depends_on     = [oci_identity_dynamic_group.FunctionsServiceDynamicGroup]
+  name           = "FunctionstoServices-${module.tags.random_id}"
+  description    = "FunctionstoServices-${module.tags.random_id} - group can manage metrics"
+  compartment_id = var.compartment_ocid
+  statements = ["allow dynamic-group ${oci_identity_dynamic_group.FunctionsServiceDynamicGroup[0].name} to manage all-resources in compartment id ${var.compartment_ocid}",
+  "allow dynamic-group ${oci_identity_dynamic_group.FunctionsServiceDynamicGroup[0].name} to use stream-push in compartment id ${var.compartment_ocid}"]
+  defined_tags  = module.tags.predefined_tags
+  freeform_tags = local.implementation_module
+}
+
+
+resource "oci_identity_policy" "FunctionsServiceReposAccessPolicy" {
+  count = contains(var.activate_policies_for_service, "Functions") ? 1 : 0
+
+  name           = "FunctionsDevelopersManageAccessPolicy-${module.tags.random_id}"
+  description    = "FunctionsDevelopersManageAccessPolicy-${module.tags.random_id} - group can manage metrics"
+  compartment_id = var.compartment_ocid
+  statements     = ["Allow service FaaS to read repos in compartment id ${var.compartment_ocid}"]
+  defined_tags   = module.tags.predefined_tags
+  freeform_tags  = local.implementation_module
+
+  #statements     = ["Allow service FaaS to read repos in tenancy"]
+
+}
+
+resource "oci_identity_policy" "AnyGroupUseFnPolicy" {
+  count = contains(var.activate_policies_for_service, "Functions") ? 1 : 0
+
+  name           = "AnyGroupUseFnPolicy-${module.tags.random_id}"
+  description    = "AnyGroupUseFnPolicy-${module.tags.random_id} - group usage"
+  compartment_id = var.compartment_ocid
+  statements     = ["ALLOW group  ${var.policy_for_group} to use functions-family in compartment id ${var.compartment_ocid} where ALL { request.principal.type= 'ApiGateway' , request.resource.compartment.id = '${var.compartment_ocid}'}"]
+  defined_tags   = module.tags.predefined_tags
+  freeform_tags  = local.implementation_module
+
+}
+
+resource "oci_identity_policy" "AnyUserUseFnPolicy" {
+
+  count = contains(var.activate_policies_for_service, "FunctionsUsers") ? 1 : 0
+
+  name           = "AnyUserUseFnPolicy-${module.tags.random_id}"
+  description    = "AnyUserUseFnPolicy-${module.tags.random_id} any user use Functions"
+  compartment_id = var.compartment_ocid
+  statements     = ["ALLOW any-user to use functions-family in compartment id ${var.compartment_ocid} where ALL { request.principal.type= 'ApiGateway' , request.resource.compartment.id = '${var.compartment_ocid}'}"]
+
+  defined_tags  = module.tags.predefined_tags
+  freeform_tags = local.implementation_module
 
 }
