@@ -35,7 +35,7 @@ resource "oci_identity_policy" "oke_autoscale_policy" {
   name           = "oke_autoscaler_instances-${module.tags.random_id}"
   statements = ["Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to manage cluster-node-pools in compartment id ${var.compartment_ocid}",
     "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to manage instance-family in compartment id ${var.compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use subnets in compartment od ${var.compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use subnets in compartment id ${var.compartment_ocid}",
     "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to use vnics in compartment id ${var.compartment_ocid}",
   "Allow dynamic-group ${oci_identity_dynamic_group.oke_worker_dynamic_group[0].name} to inspect compartments in compartment id ${var.compartment_ocid}"]
   defined_tags  = module.tags.predefined_tags
